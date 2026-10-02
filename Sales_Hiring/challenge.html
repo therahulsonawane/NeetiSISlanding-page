@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sales Challenge — Neeti SIS · B2B SaaS Closer</title>
+<meta name="description" content="The Neeti SIS Sales Challenge: respond to three common sales objections as short voice notes and send them on WhatsApp for the B2B SaaS Closer role in Kothrud, Pune." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#F4F3EE;--surface:#FFFFFF;--ink:#101214;--ink-2:#2A2F35;--muted:#646B72;
+    --line:#E4E2DA;--line-2:#ECEAE2;--accent:#2B4EF5;--accent-ink:#1E38C4;
+    --accent-tint:#E9ECFE;--accent-line:#CBD4FD;--wa:#25D366;
+    --grid:rgba(16,18,20,.038);
+    --r:16px;--r-lg:24px;
+    --sh-sm:0 1px 2px rgba(16,18,20,.05),0 6px 16px rgba(16,18,20,.05);
+    --sh:0 1px 2px rgba(16,18,20,.05),0 16px 40px rgba(16,18,20,.08);
+    --maxw:860px;--gutter:22px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;
+    background-color:var(--bg);
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:74px 74px}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--gutter)}
+  h1,h2,h3{font-family:'Manrope',system-ui,sans-serif;letter-spacing:-.02em;color:var(--ink)}
+  h1{font-weight:800;font-size:clamp(2.1rem,5vw,3.1rem);line-height:1.04}
+  h2{font-weight:700;font-size:1.4rem}
+  p{color:var(--ink-2)}
+  a{color:inherit;text-decoration:none}
+  .eyebrow{display:inline-block;font-weight:600;font-size:.76rem;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);background:var(--accent-tint);border:1px solid var(--accent-line);padding:7px 14px;border-radius:999px}
+
+  .nav{position:sticky;top:0;z-index:50;background:rgba(247,247,244,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:70px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .brand .mark{width:34px;height:34px;border-radius:9px;background:var(--ink);color:#fff;display:grid;place-items:center;font-family:'Manrope';font-weight:800;font-size:1.05rem}
+  .brand .bt{font-family:'Manrope';font-weight:800;font-size:1.15rem;letter-spacing:-.02em;line-height:1}
+  .brand small{display:block;font-family:'Inter';font-weight:500;font-size:.68rem;letter-spacing:.04em;color:var(--muted);text-transform:uppercase;margin-top:3px}
+  .back{display:inline-flex;align-items:center;gap:7px;font-size:.88rem;font-weight:600;color:var(--muted)}
+  .back:hover{color:var(--ink)}
+  @media(max-width:420px){.brand small{display:none}}
+
+  .hero{padding:54px 0 26px;text-align:center}
+  .hero h1{margin:20px auto 0;max-width:17ch}
+  .hero p{margin:16px auto 0;max-width:56ch;font-size:1.08rem}
+
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:36px 0}
+  .step{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px;box-shadow:var(--sh-sm)}
+  .step .n{width:34px;height:34px;border-radius:10px;background:var(--accent);color:#fff;display:grid;place-items:center;font-family:'Manrope';font-weight:800;font-size:.95rem;margin-bottom:14px}
+  .step h3{font-size:1.05rem;margin-bottom:6px}
+  .step p{font-size:.9rem}
+  @media(max-width:640px){.steps{grid-template-columns:1fr}}
+
+  .objections{margin-bottom:30px}
+  .objections .lbl{font-size:.76rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+  .obj{display:flex;gap:16px;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:var(--r);padding:22px 24px;margin-bottom:13px;box-shadow:var(--sh-sm)}
+  .obj .num{flex:none;font-family:'Manrope';font-weight:800;font-size:1.3rem;color:var(--accent);line-height:1.2}
+  .obj .txt .q{font-family:'Manrope';font-weight:700;font-size:1.08rem;color:var(--ink);line-height:1.35}
+  .obj .txt .h{font-size:.9rem;color:var(--muted);margin-top:6px}
+
+  .format-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:26px;box-shadow:var(--sh-sm);margin-bottom:28px}
+  .format-card .lbl{font-size:.76rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+  .frow{display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid var(--line-2)}
+  .frow:last-child{border-bottom:none;padding-bottom:0}
+  .frow .ic{flex:none;width:42px;height:42px;border-radius:11px;background:var(--accent-tint);color:var(--accent);display:grid;place-items:center}
+  .frow .ic svg{width:20px;height:20px}
+  .frow .t{font-weight:600;color:var(--ink)}
+  .frow .d{font-size:.9rem;color:var(--muted)}
+
+  .wa-card{background:var(--ink);color:#fff;border-radius:var(--r-lg);padding:46px 34px;text-align:center;box-shadow:var(--sh);position:relative;overflow:hidden}
+  .wa-card::before{content:"";position:absolute;inset:0;background:radial-gradient(520px 260px at 50% -10%,rgba(37,211,102,.18),transparent 62%)}
+  .wa-card h2{color:#fff;position:relative;font-size:1.5rem;font-weight:800}
+  .wa-number{font-family:'Manrope';font-weight:800;font-size:2.2rem;color:#fff;margin-top:10px;position:relative}
+  .wa-sub{color:#AEB4BC;font-size:.95rem;margin-top:8px;position:relative}
+  .wa-btn{display:inline-flex;align-items:center;justify-content:center;gap:11px;background:var(--wa);color:#04361f;font-weight:700;font-size:1.05rem;padding:16px 32px;border-radius:999px;margin-top:28px;position:relative;transition:transform .15s ease,box-shadow .15s ease;box-shadow:0 10px 26px rgba(37,211,102,.32)}
+  .wa-btn:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(37,211,102,.42)}
+  .wa-btn svg{width:22px;height:22px}
+  .wa-note{color:#8b929b;font-size:.85rem;margin-top:18px;position:relative;max-width:46ch;margin-left:auto;margin-right:auto}
+
+  .preview{background:var(--surface);border:1px dashed var(--line);border-radius:var(--r);padding:22px 24px;margin-top:24px}
+  .preview .lbl{font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+  .preview .bubble{background:#DCF8C6;color:#0b3d1f;border-radius:14px 14px 14px 4px;padding:14px 16px;font-size:.94rem;line-height:1.55;display:inline-block}
+
+  footer{background:var(--ink);color:#8b929b;padding:40px 0;text-align:center;margin-top:56px}
+  footer .bt{font-family:'Manrope';font-weight:800;color:#fff;font-size:1.15rem}
+  footer p{font-size:.85rem;color:#8b929b;margin-top:8px}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="index.html">
+      <span class="mark">N</span>
+      <span class="bt">NEETI SIS<small>Sales Intelligence System</small></span>
+    </a>
+    <a class="back" href="index.html">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+      Back to role
+    </a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Stage 2 · The Sales Challenge</span>
+    <h1>Respond to 3 Sales Objections on WhatsApp</h1>
+    <p>Your application told us where you've worked. This tells us how you sell. Record a short voice note for each of the three objections below and send them to us — this is how we shortlist for the B2B SaaS Closer role.</p>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="steps">
+    <div class="step">
+      <div class="n">1</div>
+      <h3>Read the 3 objections</h3>
+      <p>Real objections a closer hears every week. No perfect answer — we want your natural instinct.</p>
+    </div>
+    <div class="step">
+      <div class="n">2</div>
+      <h3>Record 3 voice notes</h3>
+      <p>One voice note per objection, 30–60 seconds each. Speak the way you'd speak to a real prospect.</p>
+    </div>
+    <div class="step">
+      <div class="n">3</div>
+      <h3>Send on WhatsApp</h3>
+      <p>Tap the button, add your name, and attach your three voice notes in that chat.</p>
+    </div>
+  </div>
+
+  <div class="objections">
+    <div class="lbl">Your three objections</div>
+    <div class="obj">
+      <div class="num">01</div>
+      <div class="txt">
+        <div class="q">"Looks good. Send me the details on WhatsApp. I'll think about it."</div>
+        <div class="h">The classic stall. How do you keep this opportunity moving?</div>
+      </div>
+    </div>
+    <div class="obj">
+      <div class="num">02</div>
+      <div class="txt">
+        <div class="q">"This is too expensive. We already spend enough on our sales setup."</div>
+        <div class="h">A pricing objection. Do you defend the value — or drop the price?</div>
+      </div>
+    </div>
+    <div class="obj">
+      <div class="num">03</div>
+      <div class="txt">
+        <div class="q">"We already use a CRM. Why do we need another system?"</div>
+        <div class="h">An existing-system objection. How do you reframe the conversation?</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="format-card">
+    <div class="lbl">Preferred Format</div>
+    <div class="frow">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 00-3 3v7a3 3 0 006 0V5a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v3"/></svg></div>
+      <div><div class="t">3 short voice notes</div><div class="d">One per objection above</div></div>
+    </div>
+    <div class="frow">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg></div>
+      <div><div class="t">30–60 seconds each</div><div class="d">Clear, confident, to the point</div></div>
+    </div>
+    <div class="frow">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+      <div><div class="t">Sent on WhatsApp</div><div class="d">Straight to our hiring team</div></div>
+    </div>
+  </div>
+
+  <div class="wa-card">
+    <h2>Send your responses to</h2>
+    <div class="wa-number">+91 883 006 5130</div>
+    <div class="wa-sub">Neeti SIS Hiring · WhatsApp only</div>
+    <a class="wa-btn" id="waBtn" href="#" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.15-1.77-.87-2.04-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.07 2.88 1.22 3.08.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.62.71.23 1.36.2 1.87.12.57-.09 1.77-.72 2.02-1.42.25-.7.25-1.29.17-1.42-.07-.13-.27-.2-.57-.35z"/><path d="M12 2a10 10 0 00-8.6 15.06L2 22l5.06-1.33A10 10 0 1012 2zm0 18.2a8.2 8.2 0 01-4.18-1.14l-.3-.18-3.1.82.83-3.02-.2-.31A8.2 8.2 0 1112 20.2z"/></svg>
+      Send My Sales Challenge
+    </a>
+    <p class="wa-note">The button opens WhatsApp with a ready message. Just add your name, then attach your 3 voice notes.</p>
+  </div>
+
+  <div class="preview">
+    <div class="lbl">Your message will start with</div>
+    <div class="bubble">Hi Neeti SIS Team, I have completed the application for the B2B SaaS Closer role. My name is ________. I am sending my Sales Challenge responses below.</div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="bt">NEETI SIS</div>
+    <p>Sales Intelligence System · Backed by the team behind Estate Autopilots</p>
+    <p>Kothrud, Pune · B2B SaaS Closer Role</p>
+  </div>
+</footer>
+
+<script>
+  var phone = "918830065130";
+  var msg = "Hi Neeti SIS Team, I have completed the application for the B2B SaaS Closer role. My name is ________. I am sending my Sales Challenge responses below.";
+  document.getElementById('waBtn').href = "https://wa.me/" + phone + "?text=" + encodeURIComponent(msg);
+</script>
+</body>
+</html>
