@@ -1,6 +1,4 @@
-# Netlify configuration for the Neeti SIS hiring site
-# Static HTML — no build step required.
-
+# Netlify configuration for Neeti SIS
 [build]
   publish = "."
 
@@ -16,18 +14,9 @@
 [context.branch-deploy.environment]
   NETLIFY_FEEDBACK_DISABLED = "true"
 
-# Pretty URLs: /challenge -> challenge.html (Netlify strips .html automatically,
-# these redirects just make sure both forms resolve cleanly).
-[[redirects]]
-  from = "/challenge"
-  to = "/challenge.html"
-  status = 200
-
-# Sensible security + caching headers
 [[headers]]
   for = "/*"
   [headers.values]
     X-Frame-Options = "SAMEORIGIN"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Permissions-Policy = "geolocation=(), microphone=(), camera=()"

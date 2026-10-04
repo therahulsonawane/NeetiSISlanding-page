@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CRM Plans & Pricing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#161A22;
+    --ink-soft:#4B5262;
+    --paper:#FAFAF8;
+    --panel:#FFFFFF;
+    --line:#E4E3DD;
+    --line-soft:#EEEDE7;
+    --basic:#1B8A5A;
+    --basic-bg:#EAF6EF;
+    --pro:#2453D8;
+    --pro-bg:#EBF0FE;
+    --ent:#7A3FD6;
+    --ent-bg:#F3EBFC;
+    --warn:#B4650B;
+    --warn-bg:#FBF1E3;
+    --new:#C25A00;
+    --new-bg:#FCEEE0;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  /* Suppress Netlify badge, drawer, feedback widget, and powered-by overlays */
+  netlify-drawer, netlify-feedback, #netlify-drawer, #netlify-feedback-drawer, .netlify-badge, [data-netlify-badge], [aria-label*="Netlify" i], [class*="netlify-drawer" i], [class*="netlify-feedback" i], [id*="netlify-drawer" i], [id*="netlify-feedback" i], iframe[src*="netlify"], iframe[id*="netlify" i], div[id^="netlify-"], div[class^="netlify-"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    position: absolute !important;
+    clip: rect(0,0,0,0) !important;
+    transform: scale(0) !important;
+    z-index: -9999 !important;
+  }
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:0 28px;}
+  h1,h2,h3,h4{font-family:'Fraunces',Georgia,serif;font-weight:600;color:var(--ink);margin:0;}
+  a{color:inherit;}
+  table{border-collapse:collapse;width:100%;}
+  code, .mono{font-variant-numeric:tabular-nums;}
+
+  /* ---------- HERO ---------- */
+  .hero{padding:58px 0 40px;border-bottom:1px solid var(--line);}
+  .revised-chip{
+    display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;
+    color:var(--basic);background:var(--basic-bg);padding:6px 13px;border-radius:999px;margin-bottom:16px;
+  }
+  .hero .kicker{color:var(--ink-soft);font-size:15px;margin-bottom:10px;}
+  .hero h1{font-size:42px;letter-spacing:-0.01em;max-width:740px;}
+  .hero p.sub{font-size:17px;color:var(--ink-soft);max-width:640px;margin-top:14px;}
+  .gst-note{font-size:13.5px;color:var(--ink-soft);margin-top:14px;background:var(--panel);border:1px solid var(--line);display:inline-block;padding:8px 14px;border-radius:8px;}
+
+  /* ---------- BILLING TOGGLE ---------- */
+  .cycle-bar{
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    margin-top:24px;
+  }
+  .cycle-label{font-size:14px;color:var(--ink-soft);}
+  .cycle-toggle{display:inline-flex;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:4px;gap:2px;}
+  .cycle-toggle button{
+    border:none;background:transparent;padding:9px 16px;border-radius:999px;
+    font-family:inherit;font-size:14px;font-weight:500;color:var(--ink-soft);
+    cursor:pointer;transition:background .18s ease, color .18s ease;white-space:nowrap;
+  }
+  .cycle-toggle button.active{background:var(--ink);color:#fff;}
+  .save-chip{
+    font-size:13px;font-weight:600;color:var(--basic);background:var(--basic-bg);
+    padding:6px 12px;border-radius:999px;opacity:0;transition:opacity .18s ease;
+  }
+  .save-chip.show{opacity:1;}
+
+  /* ---------- PLAN CARDS ---------- */
+  .plans{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:20px;
+    padding:44px 0 20px;
+  }
+  .plan-card{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:28px 26px 26px;display:flex;flex-direction:column;position:relative;overflow:hidden;
+  }
+  .plan-card::before{
+    content:"";position:absolute;top:0;left:0;right:0;height:4px;
+  }
+  .plan-card.basic::before{background:var(--basic);}
+  .plan-card.pro::before{background:var(--pro);}
+  .plan-card.ent::before{background:var(--ent);}
+  .plan-card .badge{
+    display:inline-block;font-size:12px;font-weight:600;letter-spacing:.02em;
+    padding:5px 11px;border-radius:999px;margin-bottom:16px;width:fit-content;
+  }
+  .plan-card.basic .badge{color:var(--basic);background:var(--basic-bg);}
+  .plan-card.pro .badge{color:var(--pro);background:var(--pro-bg);}
+  .plan-card.ent .badge{color:var(--ent);background:var(--ent-bg);}
+  .plan-card h3{font-size:24px;margin-bottom:6px;}
+  .plan-card .tagline{font-size:14px;font-style:italic;color:var(--ink-soft);margin-bottom:14px;}
+  .plan-card .target{font-size:14px;color:var(--ink-soft);margin-bottom:18px;min-height:42px;}
+  .price-row{display:flex;align-items:baseline;gap:6px;margin-bottom:4px;}
+  .price-row .amount{font-family:'Fraunces',serif;font-size:38px;font-weight:600;}
+  .price-row .unit{font-size:14px;color:var(--ink-soft);}
+  .price-strike{font-size:14px;color:var(--ink-soft);margin-bottom:8px;min-height:20px;}
+  .seat-note{font-size:12.5px;color:var(--ink-soft);margin-bottom:16px;}
+  .trial-note{font-size:13px;color:var(--ink-soft);margin-bottom:22px;}
+  .cta{
+    display:block;text-align:center;padding:12px 18px;border-radius:9px;
+    font-size:14px;font-weight:600;text-decoration:none;margin-bottom:24px;
+    border:1px solid var(--ink);color:var(--ink);transition:background .15s ease,color .15s ease;
+  }
+  .plan-card.basic .cta{border-color:var(--basic);color:var(--basic);}
+  .plan-card.pro .cta{background:var(--pro);border-color:var(--pro);color:#fff;}
+  .plan-card.ent .cta{border-color:var(--ent);color:var(--ent);}
+  .highlights{list-style:none;margin:0 0 6px;padding:0;font-size:14px;flex:1;}
+  .highlights li{display:flex;gap:9px;padding:6px 0;color:var(--ink);}
+  details.more{margin-top:14px;border-top:1px solid var(--line-soft);padding-top:12px;}
+  details.more summary{cursor:pointer;font-size:13px;font-weight:600;color:var(--ink-soft);list-style:none;display:flex;align-items:center;gap:6px;}
+  details.more summary::-webkit-details-marker{display:none;}
+  details.more summary::after{content:"+";margin-left:auto;font-size:16px;}
+  details.more[open] summary::after{content:"–";}
+  .more-list{list-style:none;margin:12px 0 0;padding:0;font-size:13.5px;color:var(--ink-soft);}
+  .more-list li{padding:5px 0;padding-left:16px;position:relative;}
+  .more-list li::before{content:"–";position:absolute;left:0;color:var(--line);}
+  .more-list .group-title{font-weight:600;color:var(--ink);padding-top:12px;font-size:12.5px;}
+  .more-list .group-title:first-child{padding-top:0;}
+  .more-list li.tag-new{color:var(--ink);font-weight:500;}
+  .more-list li.tag-new::before{content:"✓";color:var(--basic);}
+  .locked-list{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line);}
+  .locked-list .group-title{color:#96311c;}
+  .locked-list li::before{content:"×";color:#c0402a;}
+
+  /* ---------- CALLOUTS ---------- */
+  .callout{
+    background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--ink);
+    border-radius:10px;padding:18px 22px;margin:18px 0;font-size:14.5px;color:var(--ink-soft);
+  }
+  .callout strong{color:var(--ink);}
+  .callout.money{border-left-color:var(--warn);}
+  .callout.money strong{color:var(--warn);}
+  .callout.ent-note{border-left-color:var(--ent);}
+  .callout.ent-note strong{color:var(--ent);}
+  .callout.new-note{border-left-color:var(--basic);}
+  .callout.new-note strong{color:var(--basic);}
+
+  /* ---------- SECTIONS ---------- */
+  section{padding:52px 0;border-bottom:1px solid var(--line);}
+  section:last-of-type{border-bottom:none;}
+  .section-head{margin-bottom:26px;}
+  .section-head .eyebrow{font-size:13px;color:var(--ink-soft);margin-bottom:6px;}
+  .section-head h2{font-size:28px;}
+
+  /* billing table */
+  .billing-table{margin-top:0;}
+  .billing-table th,.billing-table td{
+    text-align:left;padding:12px 16px;border-bottom:1px solid var(--line-soft);font-size:14.5px;white-space:nowrap;
+  }
+  .billing-table th{font-weight:600;color:var(--ink-soft);font-size:13px;}
+  .billing-table tr.active-row{background:var(--basic-bg);}
+  .billing-table td.disc{font-weight:600;color:var(--basic);}
+
+  .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:10px;}
+  .table-scroll table{margin-top:0;}
+  .scroll-hint{display:none;font-size:12.5px;color:var(--ink-soft);margin:10px 0 -2px;}
+
+  /* comparison table */
+  .compare-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);margin-top:20px;}
+  .compare{min-width:820px;}
+  .compare th,.compare td{padding:11px 16px;font-size:14px;border-bottom:1px solid var(--line-soft);}
+  .compare thead th{
+    position:sticky;top:0;background:var(--panel);text-align:center;font-weight:600;
+    border-bottom:1px solid var(--line);
+  }
+  .compare thead th:first-child{text-align:left;}
+  .compare tbody th{text-align:left;font-weight:400;color:var(--ink);white-space:nowrap;}
+  .compare td{text-align:center;}
+  .compare tr.group-row td, .compare tr.group-row th{
+    background:var(--ink);color:#fff;font-weight:600;font-size:12.5px;letter-spacing:.02em;
+    padding:9px 16px;
+  }
+  .compare tr.price-row-t td, .compare tr.price-row-t th{font-weight:700;background:var(--line-soft);}
+  .yes{color:var(--basic);font-weight:700;}
+  .no{color:#C4C0B6;}
+  .compare col.c-basic{background:rgba(27,138,90,0.03);}
+  .compare col.c-pro{background:rgba(36,83,216,0.03);}
+  .compare col.c-ent{background:rgba(122,63,214,0.03);}
+
+  footer{padding:34px 0 60px;text-align:center;color:var(--ink-soft);font-size:13px;}
+
+  @media (max-width:900px){
+    .plans{grid-template-columns:1fr;}
+    .hero h1{font-size:32px;}
+  }
+
+  @media (max-width:700px){
+    .scroll-hint{display:block;}
+  }
+
+  @media (max-width:600px){
+    .wrap{padding:0 16px;}
+    .hero{padding:36px 0 28px;}
+    .revised-chip{font-size:11.5px;padding:6px 11px;line-height:1.4;}
+    .hero h1{font-size:25px;}
+    .hero p.sub{font-size:14.5px;}
+    .gst-note{font-size:12.5px;padding:8px 12px;}
+    .cycle-bar{gap:10px;}
+    .cycle-label{width:100%;}
+    .cycle-toggle{flex:1;}
+    .cycle-toggle button{padding:8px 10px;font-size:12.5px;flex:1;}
+    .plans{padding:30px 0 10px;gap:14px;}
+    .plan-card{padding:20px 16px 18px;}
+    .plan-card h3{font-size:20px;}
+    .price-row .amount{font-size:30px;}
+    section{padding:36px 0;}
+    .section-head h2{font-size:21px;}
+    .callout{padding:14px 16px;font-size:13.5px;}
+    .billing-table th,.billing-table td{padding:9px 12px;font-size:12.5px;}
+    .compare th,.compare td{padding:9px 12px;font-size:12.5px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="revised-chip">★ All plans include unlimited leads & 1 connected WhatsApp Business number</div>
+    <div class="kicker">Plans & Pricing</div>
+    <h1>Three plans, one clear upgrade path — from tracking leads to letting AI work them.</h1>
+    <p class="sub">Every plan includes unlimited leads and 1 connected official WhatsApp number per organisation. What changes is outreach automation, AI capabilities, and pooled token quotas.</p>
+    <div class="gst-note">All prices below are <strong>exclusive of GST</strong>. 18% GST applies additionally on every invoice.</div>
+
+    <div class="cycle-bar">
+      <span class="cycle-label">Billing cycle</span>
+      <div class="cycle-toggle" id="cycleToggle">
+        <button data-cycle="monthly" class="active">Monthly</button>
+        <button data-cycle="quarterly">Quarterly</button>
+        <button data-cycle="halfyearly">Half-yearly</button>
+        <button data-cycle="annual">Annual</button>
+      </div>
+      <span class="save-chip" id="saveChip">Save 15%</span>
+    </div>
+  </div>
+
+  <!-- PLAN CARDS -->
+  <div class="plans">
+
+    <!-- BASIC -->
+    <div class="plan-card basic">
+      <span class="badge">Basic</span>
+      <h3>Basic</h3>
+      <p class="tagline">"Track your leads and talk to them on WhatsApp. Nothing more, nothing less."</p>
+      <p class="target">For teams who want to track leads and message them, without automation or AI.</p>
+      <div class="price-row"><span class="amount">₹<span class="price" data-plan="basic">599</span></span><span class="unit">/ seat / month</span></div>
+      <div class="price-strike" data-strike="basic"></div>
+      <div class="seat-note">Minimum 3 seats</div>
+      <div class="trial-note">Every new organisation starts on a 15-day full Enterprise AI trial — see below</div>
+      <a href="#" class="cta">Start free trial</a>
+      <ul class="highlights">
+        <li>✓ Unlimited leads</li>
+        <li>✓ Table pipeline + SLA engine (5/10/15 min)</li>
+        <li>✓ Native mobile app with offline mode</li>
+        <li>✓ WhatsApp manual messaging (1 number per organisation)</li>
+        <li>✓ Leave management & early warning alerts</li>
+      </ul>
+      <details class="more">
+        <summary>See everything included</summary>
+        <ul class="more-list">
+          <li class="group-title">Lead & contact management</li>
+          <li>Add / edit / delete leads, bulk CSV import & export</li>
+          <li>Duplicate & re-enquiry detection</li>
+          <li>Lead source tracking (original & latest)</li>
+          <li>Buyer qualification schema (budget, config, timeline, occupation, finance) + deterministic score</li>
+          <li>Custom fields, reassignment history, ownership rules</li>
+          <li class="group-title">Pipeline & workflow</li>
+          <li>Table pipeline view, tasks & follow-ups</li>
+          <li>SLA engine, auto lead assignment</li>
+          <li class="group-title">Site visits</li>
+          <li>Scheduling, status tracking, 24h & 2h reminders</li>
+          <li class="group-title">Communication</li>
+          <li>Unified timeline, manual call logging & tracking</li>
+          <li class="tag-new">WhatsApp — manual 1:1 messaging on 1 connected number per organisation (marketing charges extra)</li>
+          <li>Notes, file attachments, activity log</li>
+          <li class="group-title">Team & agents</li>
+          <li>Role-based dashboards, daily command centre</li>
+          <li>Agent performance scores</li>
+          <li>Leave management — auto-assignment skips agents on leave</li>
+          <li class="group-title">Analytics & reports</li>
+          <li>Team performance, source attribution, drop-off reports</li>
+          <li>Early warning alerts — projects behind target, cooling buyers</li>
+          <li class="group-title">Mobile app</li>
+          <li>Native Android & iOS app, APK page with QR code</li>
+          <li>Offline mode — cached leads, actions synced later</li>
+          <li>Push notifications (new lead, task due, assignment)</li>
+          <li class="group-title">Integrations</li>
+          <li>Meta & Google Ads capture, webhooks, 2FA</li>
+          <li class="tag-new">Meta CAPI (offline conversion reporting) included</li>
+        </ul>
+        <div class="locked-list">
+          <ul class="more-list">
+            <li class="group-title">Not included</li>
+            <li>WhatsApp automation flows & broadcasts</li>
+            <li>Email — sending, campaigns, broadcasts</li>
+            <li>Sell-out analytics & portfolio matrix</li>
+            <li>Google Sheets sync</li>
+            <li>Call recording (store or analyze)</li>
+            <li>All AI features</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+
+    <!-- PROFESSIONAL -->
+    <div class="plan-card pro">
+      <span class="badge">Professional</span>
+      <h3>Professional</h3>
+      <p class="tagline">"Automate your outreach. Fill your pipeline on autopilot."</p>
+      <p class="target">For growing sales teams that need outreach automation & WhatsApp workflows.</p>
+      <div class="price-row"><span class="amount">₹<span class="price" data-plan="pro">1,199</span></span><span class="unit">/ seat / month</span></div>
+      <div class="price-strike" data-strike="pro"></div>
+      <div class="seat-note">Minimum 5 seats</div>
+      <div class="trial-note">Included in the 15-day Enterprise AI trial every organisation starts on</div>
+      <a href="#" class="cta">Start free trial</a>
+      <ul class="highlights">
+        <li>✓ Everything in Basic</li>
+        <li>✓ WhatsApp automation, broadcasts & missed-call recovery (1 number per organisation)</li>
+        <li>✓ Full email — send, campaigns, automation & broadcasts</li>
+        <li>✓ Call recording — store only (audio saved & searchable)</li>
+        <li>✓ Sell-out timeline + portfolio matrix, Google Sheets sync</li>
+      </ul>
+      <details class="more">
+        <summary>See everything included</summary>
+        <ul class="more-list">
+          <li class="group-title">WhatsApp</li>
+          <li class="tag-new">1 connected number per organisation with intelligent agent/project routing</li>
+          <li>Missed-call auto-recovery, automation flow builder, trigger-based automation</li>
+          <li>Bulk broadcasts, template management (WhatsApp marketing message charges extra)</li>
+          <li class="group-title">Email</li>
+          <li>1:1 send & receive via your own Gmail/Outlook mailbox, templates</li>
+          <li class="tag-new">Bulk email campaigns & broadcasts (dedicated sending infrastructure)</li>
+          <li>Open/click tracking on campaigns, automation flows, opt-out management, mobile composer</li>
+          <li class="group-title">Call recording</li>
+          <li class="tag-new">Automatic call recording, store-only mode — audio is saved and searchable</li>
+          <li class="group-title">Advanced integrations</li>
+          <li>Google Sheets sync (real-time push to sheet)</li>
+          <li class="group-title">Advanced analytics</li>
+          <li>Sell-out timeline & reverse planning</li>
+          <li>Portfolio comparative matrix</li>
+          <li>Buyer journey analytics, contactability by source</li>
+          <li class="group-title">Other</li>
+          <li>Branding watermark removed</li>
+          <li>Historical performance snapshots per agent</li>
+        </ul>
+      </details>
+    </div>
+
+    <!-- ENTERPRISE AI -->
+    <div class="plan-card ent">
+      <span class="badge">Enterprise AI</span>
+      <h3>Enterprise AI</h3>
+      <p class="tagline">"Let AI work your leads while your team closes deals."</p>
+      <p class="target">For high-volume teams that need AI intelligence and full call analysis.</p>
+      <div class="price-row"><span class="amount">₹<span class="price" data-plan="ent">1,999</span></span><span class="unit">/ seat / month</span></div>
+      <div class="price-strike" data-strike="ent"></div>
+      <div class="seat-note">Available for 2+ seats (1M AI tokens / mo for 5 users)</div>
+      <div class="trial-note">15-day free trial — every new organisation starts here automatically</div>
+      <a href="#" class="cta">Talk to us</a>
+      <ul class="highlights">
+        <li>✓ Everything in Professional</li>
+        <li>✓ Automatic call recording + full AI call analysis</li>
+        <li>✓ AI buyer-criteria extraction, site-visit detection, WhatsApp draft from calls</li>
+        <li>✓ Ask SIS chat assistant, Objection Playbook coach, Meta Ads AI report</li>
+        <li>✓ Monthly pooled AI wallet: 1,000,000 tokens for 5 users (500k for 3 users, 250k for 2 users)</li>
+      </ul>
+      <details class="more">
+        <summary>See everything included</summary>
+        <ul class="more-list">
+          <li class="group-title">WhatsApp</li>
+          <li class="tag-new">1 connected WhatsApp Business API number per organisation (marketing charges extra)</li>
+          <li class="group-title">AI token wallet (monthly pooled grant)</li>
+          <li class="tag-new">1 Million (1,000,000) tokens/mo for 5 users</li>
+          <li>500k (500,000) tokens/mo for 3 users</li>
+          <li>250k (250,000) tokens/mo for 2 users</li>
+          <li>Top-ups available anytime as needed</li>
+          <li class="group-title">Call recording (mobile, Android)</li>
+          <li>Store & Analyze mode — every recorded call is transcribed and scored</li>
+          <li>OEM setup wizard (Samsung, Xiaomi, Realme, Google Phone…)</li>
+          <li>Folder permission setup, background upload queue with retry</li>
+          <li>In-app audio player, min. duration threshold (default 30s)</li>
+          <li class="group-title">AI call analysis (per recorded call)</li>
+          <li>Speaker-separated transcription</li>
+          <li>Agent QA score (0–100, 5-pillar rubric) + buyer intent score</li>
+          <li>Sentiment analysis, talk ratio (agent % vs buyer %)</li>
+          <li>Objections detected with per-objection coaching</li>
+          <li>Competitor mentions extracted from call</li>
+          <li>Buyer criteria auto-extracted & written back to lead</li>
+          <li>Site-visit detection → one-tap schedule</li>
+          <li>AI WhatsApp follow-up draft in buyer's language</li>
+          <li>Call summary & key takeaways</li>
+          <li class="group-title">Other AI intelligence</li>
+          <li>Ask SIS — natural-language chat assistant grounded in live CRM data</li>
+          <li>Objection Playbook — real-time coaching on handling buyer objections</li>
+          <li>Meta Ads AI Report — spend efficiency, budget reallocation, creative fatigue alerts</li>
+          <li>24/7 WhatsApp pre-sales concierge bot</li>
+          <li class="group-title">Enterprise operations</li>
+          <li>White-labeling, REST API & webhooks</li>
+          <li>Dedicated account manager, priority SLA support</li>
+        </ul>
+      </details>
+    </div>
+
+  </div>
+
+  <div class="callout money">
+    <strong>WhatsApp marketing charges are extra:</strong> The CRM subscription covers the platform, 1 connected WhatsApp Business number, automation workflows, broadcasts engine, and team inbox. Official Meta conversation charges (marketing broadcasts, utility notifications, authentication) are billed directly by Meta with <strong>0% markup</strong> by the CRM.
+  </div>
+
+  <!-- BILLING CYCLE TABLE -->
+  <section id="billing">
+    <div class="section-head">
+      <div class="eyebrow">Pay upfront, pay less</div>
+      <h2>Billing cycles & discounts</h2>
+    </div>
+    <p class="scroll-hint">→ Swipe sideways to see all plans</p>
+    <div class="table-scroll">
+    <table class="billing-table" id="billingTable">
+      <thead>
+        <tr><th>Cycle</th><th>Discount</th><th>Basic</th><th>Professional</th><th>Enterprise AI</th></tr>
+      </thead>
+      <tbody>
+        <tr data-cycle-row="monthly"><td>Monthly</td><td>—</td><td class="mono">₹599/seat/mo</td><td class="mono">₹1,199/seat/mo</td><td class="mono">₹1,999/seat/mo</td></tr>
+        <tr data-cycle-row="quarterly"><td>Quarterly (3 months)</td><td class="disc">5% off</td><td class="mono">₹569/seat/mo</td><td class="mono">₹1,139/seat/mo</td><td class="mono">₹1,899/seat/mo</td></tr>
+        <tr data-cycle-row="halfyearly"><td>Half-yearly (6 months)</td><td class="disc">10% off</td><td class="mono">₹539/seat/mo</td><td class="mono">₹1,079/seat/mo</td><td class="mono">₹1,799/seat/mo</td></tr>
+        <tr data-cycle-row="annual"><td>Annual (1 year)</td><td class="disc">15% off</td><td class="mono">₹509/seat/mo</td><td class="mono">₹1,019/seat/mo</td><td class="mono">₹1,699/seat/mo</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="font-size:13.5px;color:var(--ink-soft);margin-top:14px;">All figures exclude GST. The 15-day trial converts to monthly billing automatically unless a longer cycle is selected at sign-up.</p>
+  </section>
+
+  <!-- FULL COMPARISON -->
+  <section id="compare">
+    <div class="section-head">
+      <div class="eyebrow">Side by side</div>
+      <h2>Full feature comparison</h2>
+    </div>
+    <p class="scroll-hint">→ Swipe sideways to see all plans</p>
+    <div class="compare-scroll">
+      <table class="compare">
+        <colgroup><col><col class="c-basic"><col class="c-pro"><col class="c-ent"></colgroup>
+        <thead>
+          <tr><th>Feature</th><th>Basic</th><th>Professional</th><th>Enterprise AI</th></tr>
+        </thead>
+        <tbody>
+          <tr class="price-row-t"><th>Price (ex-GST)</th><td>₹599/seat/mo</td><td>₹1,199/seat/mo</td><td>₹1,999/seat/mo</td></tr>
+          <tr><th>Team size</th><td>3+ seats</td><td>5+ seats</td><td>2+ seats</td></tr>
+          <tr><th>Free trial (all features included)</th><td colspan="3" style="text-align:center;">15 days — every organisation starts on full Enterprise AI</td></tr>
+          <tr><th>Unlimited leads</th><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><th>Pipeline views (Table)</th><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><th>Lead management & dedup</th><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><th>Tasks & follow-ups</th><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><th>SLA engine (5m / 10m / 15m)</th><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><th>Site visit scheduling</th><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><th>Unified conversation timeline</th><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><th>Manual call logging</th><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><th>Leave management</th><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><th>Daily command centre</th><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><th>Early warning alerts</th><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><th>Team performance analytics</th><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><th>Stage velocity & bottleneck</th><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><th>Meta / Google Ads integration</th><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><th>Meta CAPI (offline conversion reporting)</th><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><th>Webhook ingestion</th><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><th>Mobile app (Android & iOS)</th><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><th>Offline mode (cached leads + action queue)</th><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><th>2FA</th><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><th>Branding watermark</th><td>Shown</td><td>Removed</td><td>Removed</td></tr>
+
+          <tr class="group-row"><th>WhatsApp</th><td></td><td></td><td></td></tr>
+          <tr><th>Connected WhatsApp numbers</th><td>1 per org</td><td>1 per org</td><td>1 per org</td></tr>
+          <tr><th>Manual 1:1 messaging</th><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><th>Automation flows & broadcasts</th><td class="no">✕</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><th>Missed-call auto-recovery</th><td class="no">✕</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><th>24/7 AI pre-sales concierge bot</th><td class="no">✕</td><td class="no">✕</td><td class="yes">✓</td></tr>
+          <tr><th>WhatsApp marketing & Meta charges</th><td colspan="3" style="text-align:center;font-size:13px;color:var(--ink-soft);">Billed directly by Meta (extra at actuals with 0% markup)</td></tr>
+
+          <tr class="group-row"><th>Email</th><td></td><td></td><td></td></tr>
+          <tr><th>1:1 send via your own mailbox</th><td class="no">✕</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><th>Bulk campaigns & broadcasts</th><td class="no">✕</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><th>Open/click tracking, automation, opt-out</th><td class="no">✕</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+
+          <tr class="group-row"><th>Professional features</th><td></td><td></td><td></td></tr>
+          <tr><th>Sell-out timeline & reverse planning</th><td class="no">✕</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><th>Portfolio comparative matrix</th><td class="no">✕</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><th>Google Sheets sync (push)</th><td class="no">✕</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+
+          <tr class="group-row"><th>Call recording</th><td></td><td></td><td></td></tr>
+          <tr><th>Automatic recording, store-only</th><td class="no">✕</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><th>AI transcription & analysis (QA, intent, sentiment, talk ratio, objections, competitors, criteria write-back, site-visit detection, WhatsApp draft)</th><td class="no">✕</td><td class="no">✕</td><td class="yes">✓</td></tr>
+
+          <tr class="group-row"><th>AI intelligence & Tokens</th><td></td><td></td><td></td></tr>
+          <tr><th>Ask SIS chat assistant</th><td class="no">✕</td><td class="no">✕</td><td class="yes">✓</td></tr>
+          <tr><th>Objection Playbook coach</th><td class="no">✕</td><td class="no">✕</td><td class="yes">✓</td></tr>
+          <tr><th>Meta Ads AI report</th><td class="no">✕</td><td class="no">✕</td><td class="yes">✓</td></tr>
+          <tr><th>Monthly AI Token Allocation</th><td class="no">✕</td><td class="no">✕</td><td class="yes" style="font-size:13px;">1M (5 users) · 500k (3 users) · 250k (2 users)</td></tr>
+
+          <tr class="group-row"><th>Enterprise operations</th><td></td><td></td><td></td></tr>
+          <tr><th>White-labeling</th><td class="no">✕</td><td class="no">✕</td><td class="yes">✓</td></tr>
+          <tr><th>Dedicated account manager</th><td class="no">✕</td><td class="no">✕</td><td class="yes">✓</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:13px;color:var(--ink-soft);margin-top:12px;">* WhatsApp marketing & template conversation charges are billed directly by Meta. Bulk email broadcast sending infrastructure is included on Professional and Enterprise plans.</p>
+  </section>
+
+  <!-- TRIAL -->
+  <section id="trial">
+    <div class="section-head">
+      <div class="eyebrow">Every new organisation</div>
+      <h2>15-day universal Enterprise AI trial</h2>
+    </div>
+    <div class="callout new-note">
+      <strong>Every new organisation gets full Enterprise AI feature access for 15 days.</strong> No credit card required to start.
+    </div>
+    <ul style="font-size:14px;color:var(--ink-soft);">
+      <li><strong>Trial AI credit:</strong> A complimentary grant of <strong>125,000 (125k) AI tokens</strong> is provided for the 15 days. This enables full evaluation of AI call recording analysis, transcription, Ask SIS assistant, and Objection Playbook coaching.</li>
+      <li><strong>Post-trial options:</strong> You can choose the plan (Basic, Professional, or Enterprise AI) and seat count that best fits your team. All lead and activity data remains safely retained.</li>
+      <li>Upgrade or customize your plan at any point during or after the 15-day trial.</li>
+    </ul>
+  </section>
+
+  <footer>© Neeti CRM · All prices exclude 18% GST · WhatsApp conversation charges billed directly by Meta</footer>
+</div>
+
+<script>
+  const PRICES = {
+    basic: { monthly:599, quarterly:569, halfyearly:539, annual:509 },
+    pro:   { monthly:1199, quarterly:1139, halfyearly:1079, annual:1019 },
+    ent:   { monthly:1999, quarterly:1899, halfyearly:1799, annual:1699 }
+  };
+  const DISCOUNT_LABEL = { monthly:null, quarterly:'Save 5%', halfyearly:'Save 10%', annual:'Save 15%' };
+  const fmt = n => n.toLocaleString('en-IN');
+
+  function applyCycle(cycle){
+    document.querySelectorAll('#cycleToggle button').forEach(b=>{
+      b.classList.toggle('active', b.dataset.cycle === cycle);
+    });
+    const chip = document.getElementById('saveChip');
+    if (DISCOUNT_LABEL[cycle]) {
+      chip.textContent = DISCOUNT_LABEL[cycle];
+      chip.classList.add('show');
+    } else {
+      chip.classList.remove('show');
+    }
+    Object.keys(PRICES).forEach(plan=>{
+      const priceEl = document.querySelector(`.price[data-plan="${plan}"]`);
+      const strikeEl = document.querySelector(`[data-strike="${plan}"]`);
+      priceEl.textContent = fmt(PRICES[plan][cycle]);
+      if (cycle === 'monthly') {
+        strikeEl.textContent = '';
+      } else {
+        strikeEl.textContent = `₹${fmt(PRICES[plan].monthly)}/mo billed monthly`;
+      }
+    });
+    document.querySelectorAll('#billingTable tbody tr').forEach(row=>{
+      row.classList.toggle('active-row', row.dataset.cycleRow === cycle);
+    });
+  }
+
+  document.getElementById('cycleToggle').addEventListener('click', e=>{
+    const btn = e.target.closest('button');
+    if(!btn) return;
+    applyCycle(btn.dataset.cycle);
+  });
+
+  applyCycle('monthly');
+</script>
+
+
+<script>
+  // Cleanly remove any Netlify drawer / preview badges if injected
+  (function(){
+    function removeNetlifyBadge(){
+      var els = document.querySelectorAll('netlify-drawer, netlify-feedback, #netlify-drawer, #netlify-feedback-drawer, .netlify-badge, [data-netlify-badge], [aria-label*="Netlify" i], iframe[src*="netlify"], iframe[id*="netlify" i], div[id*="netlify-drawer" i], div[id*="netlify-feedback" i]');
+      els.forEach(function(el){ el.remove(); });
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', removeNetlifyBadge);
+    } else {
+      removeNetlifyBadge();
+    }
+    try {
+      var obs = new MutationObserver(function(){ removeNetlifyBadge(); });
+      obs.observe(document.documentElement, { childList: true, subtree: true });
+    } catch(e){}
+  })();
+</script>
+</body>
+</html>

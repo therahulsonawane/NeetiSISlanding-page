@@ -33,6 +33,19 @@
     --maxw:1180px;--gutter:22px;
   }
   *{box-sizing:border-box;margin:0;padding:0}
+    /* Suppress Netlify badge, drawer, feedback widget, and powered-by overlays */
+  netlify-drawer, netlify-feedback, #netlify-drawer, #netlify-feedback-drawer, .netlify-badge, [data-netlify-badge], [aria-label*="Netlify" i], [class*="netlify-drawer" i], [class*="netlify-feedback" i], [id*="netlify-drawer" i], [id*="netlify-feedback" i], iframe[src*="netlify"], iframe[id*="netlify" i], div[id^="netlify-"], div[class^="netlify-"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    position: absolute !important;
+    clip: rect(0,0,0,0) !important;
+    transform: scale(0) !important;
+    z-index: -9999 !important;
+  }
   html{scroll-behavior:smooth}
   body{font-family:'Inter',system-ui,-apple-system,sans-serif;color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
     background-color:var(--bg);
@@ -835,6 +848,25 @@
       });
     });
   }
+</script>
+
+<script>
+  // Cleanly remove any Netlify drawer / preview badges if injected
+  (function(){
+    function removeNetlifyBadge(){
+      var els = document.querySelectorAll('netlify-drawer, netlify-feedback, #netlify-drawer, #netlify-feedback-drawer, .netlify-badge, [data-netlify-badge], [aria-label*="Netlify" i], iframe[src*="netlify"], iframe[id*="netlify" i], div[id*="netlify-drawer" i], div[id*="netlify-feedback" i]');
+      els.forEach(function(el){ el.remove(); });
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', removeNetlifyBadge);
+    } else {
+      removeNetlifyBadge();
+    }
+    try {
+      var obs = new MutationObserver(function(){ removeNetlifyBadge(); });
+      obs.observe(document.documentElement, { childList: true, subtree: true });
+    } catch(e){}
+  })();
 </script>
 </body>
 </html>
