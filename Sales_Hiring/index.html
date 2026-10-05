@@ -1,6 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '2566818950420146');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=2566818950420146&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Neeti SIS — B2B SaaS Closer (Real Estate) · Kothrud, Pune</title>
@@ -865,24 +882,87 @@
   var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.1});
   document.querySelectorAll('.reveal').forEach(function(el){io.observe(el)});
 
-  // Form submission — works locally (Live Server) AND on Netlify.
-  // Live Server returns 405 on POST, so we intercept, use fetch, then redirect via JS.
+  // Form submission — sends data to NeetiCRM webhook + Netlify forms and redirects to challenge.html
   var closerForm = document.getElementById('closerForm');
   if (closerForm) {
     closerForm.addEventListener('submit', function(e) {
       e.preventDefault();
       var btn = closerForm.querySelector('button[type="submit"]');
-      if (btn) { btn.disabled = true; btn.textContent = 'Submitting…'; }
-      var body = new URLSearchParams(new FormData(closerForm)).toString();
-      fetch('/', {
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Submitting…';
+      }
+
+      var formData = new FormData(closerForm);
+      var payload = {};
+      formData.forEach(function(value, key) {
+        payload[key] = value;
+      });
+
+      // Standard CRM contact & attribution fields
+      payload.name = payload.full_name || '';
+      payload.phone = payload.whatsapp_number || '';
+      payload.email = payload.email || '';
+      payload.source = 'Neeti SIS Landing Page - Closer Application';
+      payload.page_url = window.location.href;
+      payload.referrer = document.referrer || '';
+      payload.submitted_at = new Date().toISOString();
+
+      // Capture UTM query parameters if present
+      try {
+        var urlParams = new URLSearchParams(window.location.search);
+        ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(function(p) {
+          if (urlParams.get(p)) {
+            payload[p] = urlParams.get(p);
+          }
+        });
+      } catch(err) {}
+
+      // Meta Pixel Lead tracking
+      try {
+        if (typeof window.fbq === 'function') {
+          window.fbq('track', 'Lead', {
+            content_name: 'B2B SaaS Closer Application',
+            value: 0,
+            currency: 'INR'
+          });
+        }
+      } catch(err) {}
+
+      var webhookUrl = 'https://api.neeticrm.com/api/webhooks/inbound/631503d2a4051db0837141073b2212b8f6b75c1ada299cf7';
+      var netlifyBody = new URLSearchParams(formData).toString();
+
+      var redirected = false;
+      function proceed() {
+        if (!redirected) {
+          redirected = true;
+          window.location.href = 'challenge.html';
+        }
+      }
+
+      // Safety timeout to ensure user is redirected even on network delay/offline
+      var timeoutId = setTimeout(proceed, 2500);
+
+      var webhookPromise = fetch(webhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      var netlifyPromise = fetch('/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: body
-      }).then(function() {
-        window.location.href = 'challenge.html';
+        body: netlifyBody
+      });
+
+      Promise.allSettled([webhookPromise, netlifyPromise]).then(function() {
+        clearTimeout(timeoutId);
+        proceed();
       }).catch(function() {
-        // On local dev (Live Server) fetch may fail — redirect anyway.
-        window.location.href = 'challenge.html';
+        clearTimeout(timeoutId);
+        proceed();
       });
     });
   }
